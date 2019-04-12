@@ -7,16 +7,16 @@ def get_num_lines(file):
     return sum(1 for line in open(file))
 
 
-def construct_data(image_file = "data/digitdata/trainingimages",
-                            label_file="data/digitdata/traininglabels"):
+def construct_data(image_file, label_file):
 
     if not os.path.isfile(image_file) or not os.path.isfile(label_file):
         print("Input files do not exist")
         return None
 
     num_lines = get_num_lines(label_file)
+    num_lines_images = get_num_lines(image_file)
 
-    if num_lines != int(get_num_lines(image_file)/28):
+    if num_lines != int(num_lines_images/28):
         print("Number of lines mismatch")
         return None
 
@@ -26,18 +26,15 @@ def construct_data(image_file = "data/digitdata/trainingimages",
     with open(image_file, "r") as open_image_file:
         line_handle = 0
         matrix_index = 0
-        while line_handle < num_lines:
-
+        while line_handle < (num_lines_images - 27):
             hz_index = 0
-
-            for line in itertools.islice(open_image_file, line_handle, line_handle + 27):
+            for line in itertools.islice(open_image_file, 0,  28):
                 vt_index = 0
                 for char in line:
                     if char == '#' or char == "+":
                             image_matrix[matrix_index][hz_index][vt_index] = 1
                     vt_index += 1
                 hz_index += 1
-
             matrix_index += 1
             line_handle += 28
 
